@@ -29,13 +29,9 @@ main(int argc, char **argv)
 
 	b = skip = 0;
 	i = 1;
-	for (;;) {
-		c = fgetc(src);
-		if (c == EOF)
-			break;
+	while ((c = fgetc(src)) != EOF) {
 		if (c == '\n') {
-			if (skip)
-				skip = 0;
+			skip = 0;
 			continue;
 		}
 		if (skip)
@@ -46,14 +42,14 @@ main(int argc, char **argv)
 		}
 		if (c == ' ' || c == '\t')
 			continue;
-		if ((c < '0' || c > '9') && (c < 'a' || c > 'f')) {
+		if (c >= '0' && c <= '9')
+			c -= '0';
+		else if (c >= 'a' && c <= 'f')
+			c = c - 'a' + 10;
+		else {
 			fprintf(stderr, "bad char '%c'\n", c);
 			return 1;
 		}
-		if (c >= '0' && c <= '9')
-			c -= '0';
-		else
-			c = c - 'a' + 10;
 		b = b | ((char)c << (4 * i));
 		if (i)
 			i--;
