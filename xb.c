@@ -57,10 +57,7 @@ main(int argc, char **argv)
 			if (!n)
 				continue;
 			while (--n)
-				if (fwrite(&pb, 1, 1, dst) != 1) {
-					perror("fwrite");
-					return 1;
-				}
+				fputc(pb, dst);
 			continue;
 		}
 		if (c >= '0' && c <= '9')
@@ -75,10 +72,7 @@ main(int argc, char **argv)
 		if (i)
 			i--;
 		else {
-			if (fwrite(&b, 1, 1, dst) != 1) {
-				perror("fwrite");
-				return 1;
-			}
+			fputc(b, dst);
 			i = 1;
 			pb = b;
 			b = 0;
