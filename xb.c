@@ -7,8 +7,10 @@ main(int argc, char **argv)
 	FILE *src, *dst;
 	int c;
 	unsigned char b;
+	unsigned char pb;
 	int i;
 	int skip;
+	unsigned long n;
 
 	argc--;
 	argv++;
@@ -27,7 +29,7 @@ main(int argc, char **argv)
 		return 1;
 	}
 
-	b = skip = 0;
+	b = pb = skip = 0;
 	i = 1;
 	while ((c = fgetc(src)) != EOF) {
 		if (c == '\n') {
@@ -42,6 +44,25 @@ main(int argc, char **argv)
 		}
 		if (c == ' ' || c == '\t')
 			continue;
+		if (c == '*') {
+			n = 0;
+			for (;;) {
+				c = fgetc(src);
+				if (c < '0' || c > '9') {
+					ungetc(c, src);
+					break;
+				}
+				n = n * 10 + (c - '0');
+			}
+			if (!n)
+				continue;
+			while (--n)
+				if (fwrite(&pb, 1, 1, dst) != 1) {
+					perror("fwrite");
+					return 1;
+				}
+			continue;
+		}
 		if (c >= '0' && c <= '9')
 			c -= '0';
 		else if (c >= 'a' && c <= 'f')
@@ -59,6 +80,7 @@ main(int argc, char **argv)
 				return 1;
 			}
 			i = 1;
+			pb = b;
 			b = 0;
 		}
 	}

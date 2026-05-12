@@ -1,3 +1,4 @@
 Converts an input file with ASCII hexadecimal values to an output file with the
 corresponding actual byte values.
 Whitespace (' ' and '\t') and comments started with ';' are ignored.
+A '*' and a decimal repetition count (nothing in between) will repeat the byte.
